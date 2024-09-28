@@ -1,0 +1,14 @@
+MODEL:
+    NAME: 'GAGAvatar'
+    TASK: 'DynamicGaussian'
+
+OPTIMIZE:
+    NAME: 'Adam'
+    LR_DECAY_RATE: 0.1
+    LR_DECAY_ITER: 200000
+    LEARNING_RATE: 1.0e-4
+
+TRAIN:
+    BATCH_SIZE: 8
+    TRAIN_ITER: 200000
+    CHECK_INTERVAL: 10000

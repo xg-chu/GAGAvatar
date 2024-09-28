@@ -1,0 +1,7 @@
+DATASET:
+    NAME: 'VFHQ'
+    LOADER: 'TrackedData'
+    FLAME_SCALE: 5.0
+    FOCAL_LENGTH: 12.0
+    POINT_PLANE_SIZE: 296
+    PATH: '/data/umihebi0/users/x-chu/Data/VFHQ_CENTERED/'

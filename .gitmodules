@@ -1,0 +1,3 @@
+[submodule "core/libs/GAGAvatar_track"]
+	path = core/libs/GAGAvatar_track
+	url = git@github.com:xg-chu/GAGAvatar_track.git
