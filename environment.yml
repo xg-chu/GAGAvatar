@@ -1,4 +1,4 @@
-name: 3dcv_home
+name: GAGAvatar
 channels:
   - pytorch3d
   - pytorch

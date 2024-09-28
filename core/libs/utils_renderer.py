@@ -3,7 +3,7 @@
 
 import math
 import torch
-from splatting_with_depth_32d import GaussianRasterizationSettings, GaussianRasterizer
+from diff_gaussian_rasterization_32d import GaussianRasterizationSettings, GaussianRasterizer
 
 NUM_CHANNELS = 32
 
@@ -22,7 +22,7 @@ def render_gaussian(gs_params, cam_matrix, cam_params=None, sh_degree=0, bg_colo
     except:
         pass
     # Run rendering
-    all_rendered, all_radii, all_depths, all_alphas = [], [], [], []
+    all_rendered, all_radii = [], []
     for bid in range(batch_size):
         raster_settings = GaussianRasterizationSettings(
             sh_degree=sh_degree, bg=bg_color, 
@@ -32,7 +32,7 @@ def render_gaussian(gs_params, cam_matrix, cam_params=None, sh_degree=0, bg_colo
             scale_modifier=1.0, prefiltered=False, debug=False
         )
         rasterizer = GaussianRasterizer(raster_settings=raster_settings)
-        rendered, radii, rendered_depth, rendered_alpha = rasterizer(
+        rendered, radii = rasterizer(
             means3D=points[bid], means2D=means2D[bid], 
             shs=None, colors_precomp=colors[bid], 
             opacities=opacities[bid], scales=scales[bid], 
@@ -40,15 +40,10 @@ def render_gaussian(gs_params, cam_matrix, cam_params=None, sh_degree=0, bg_colo
         )
         all_rendered.append(rendered)
         all_radii.append(radii)
-        all_depths.append(rendered_depth)
-        all_alphas.append(rendered_alpha)
     all_rendered = torch.stack(all_rendered, dim=0)
     all_radii = torch.stack(all_radii, dim=0)
-    all_depths = torch.stack(all_depths, dim=0)
-    all_alphas = torch.stack(all_alphas, dim=0)
     return {
-        "images": all_rendered, 'depths': all_depths, 'alphas': all_alphas,
-        "radii": all_radii, "viewspace_points": means2D,
+        "images": all_rendered, "radii": all_radii, "viewspace_points": means2D,
     }
 
 

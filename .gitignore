@@ -30,7 +30,10 @@
 **/backup
 **/Backup
 **/assets
+**/demos
 **/render_results
+**/depth-diff-gaussian-rasterization
+**/diff-gaussian-rasterization
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
