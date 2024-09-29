@@ -13,6 +13,8 @@ from copy import deepcopy
 from core.libs.utils_lmdb import LMDBEngine
 from core.libs.flame_model import FLAMEModel
 
+FOCAL_LENGTH = 12.0
+
 class TrackedData(torch.utils.data.Dataset):
     def __init__(self, data_cfg, split, cross_id=False):
         super().__init__()
@@ -157,7 +159,9 @@ def build_points_planes(plane_size, transforms):
     )
     R = transforms[:3, :3]; T = transforms[:3, 3:]
     cam_dirs = torch.tensor([[0., 0., 1.]], dtype=torch.float32)
-    ray_dirs = torch.nn.functional.pad(torch.stack([x/12.0, y/12.0], dim=-1), (0, 1), value=1.0)
+    ray_dirs = torch.nn.functional.pad(
+        torch.stack([x/FOCAL_LENGTH, y/FOCAL_LENGTH], dim=-1), (0, 1), value=1.0
+    )
     cam_dirs = torch.matmul(R, cam_dirs.reshape(-1, 3)[:, :, None])[..., 0]
     ray_dirs = torch.matmul(R, ray_dirs.reshape(-1, 3)[:, :, None])[..., 0]
     origins = (-torch.matmul(R, T)[..., 0]).broadcast_to(ray_dirs.shape).squeeze()

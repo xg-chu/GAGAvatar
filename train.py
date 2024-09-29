@@ -12,7 +12,7 @@ from tqdm import tqdm
 from core.data import build_dataset
 from core.models import build_model
 from core.libs.utils import (
-    ConfigDict, vis_depth, rtqdm, device_parser, 
+    ConfigDict, rtqdm, device_parser, 
     calc_parameters, biuld_logger, calc_psnr, calc_ssim
 )
 
@@ -136,7 +136,7 @@ class Trainer:
             visulize_rgbs = self._resize(visulize_rgbs, 256)
             _validation_outputs.append({'PSNR': psnr, 'SSIM': ssim, 'Image': visulize_rgbs})
         merged_images = torchvision.utils.make_grid(
-            torch.stack([r['Image'] for r in _validation_outputs[:16]]), nrow=4, padding=0
+            torch.stack([r['Image'] for r in _validation_outputs[:15]]), nrow=3, padding=0
         )
         merged_psnr = np.mean([r['PSNR'] for r in _validation_outputs])
         merged_ssim = np.mean([r['SSIM'] for r in _validation_outputs])
