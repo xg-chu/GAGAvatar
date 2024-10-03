@@ -1,5 +1,6 @@
 # Custum
 **/*.pkl
+**/*.pt
 **/*.pth
 **/*.ckpt
 **/*.onnx

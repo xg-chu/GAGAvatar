@@ -69,7 +69,7 @@ python inference.py --driver_path ./demos/drivers/obama --image_path ./demos/exa
 ``` 
 Driven by a tracked **image_lmdb**:
 ```
-python inference.py --driver_path ./demos/drivers/vfhq_driver --image_path ./demos/examples/1.jpg
+python inference.py --driver_path ./demos/drivers/vfhq_demo --image_path ./demos/examples/1.jpg
 ```
 
 To test the inference speed, refer to the ```speed_test()``` function in ```inference.py```.

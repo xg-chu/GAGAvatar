@@ -14,7 +14,7 @@ from core.models import build_model
 from core.libs.utils import ConfigDict
 from core.libs.GAGAvatar_track.engines import CoreEngine as TrackEngine
 
-def inference(image_path, driver_path, resume_path, device='cuda'):
+def inference(image_path, driver_path, resume_path, force_retrack=False, device='cuda'):
     lightning.fabric.seed_everything(42)
     driver_path = driver_path[:-1] if driver_path.endswith('/') else driver_path
     driver_name = os.path.basename(driver_path).split('.')[0]
@@ -31,7 +31,7 @@ def inference(image_path, driver_path, resume_path, device='cuda'):
     track_engine = TrackEngine(focal_length=12.0, device=device)
     # build input data
     feature_name = os.path.basename(image_path).split('.')[0]
-    feature_data = get_tracked_results(image_path, track_engine, force_refresh=False)
+    feature_data = get_tracked_results(image_path, track_engine, force_retrack=force_retrack)
     if feature_data is None:
         print(f'Finish inference, no face in input: {image_path}.')
         return
@@ -43,7 +43,7 @@ def inference(image_path, driver_path, resume_path, device='cuda'):
         driver_dataloader = torch.utils.data.DataLoader(driver_dataset, batch_size=1, num_workers=2, shuffle=False)
     else:
         driver_name = os.path.basename(driver_path).split('.')[0]
-        driver_data = get_tracked_results(driver_path, track_engine, force_refresh=False)
+        driver_data = get_tracked_results(driver_path, track_engine, force_retrack=force_retrack)
         if driver_data is None:
             print(f'Finish inference, no face in driver: {image_path}.')
             return
@@ -82,7 +82,7 @@ def inference(image_path, driver_path, resume_path, device='cuda'):
     print(f'Finish inference: {dump_path}.')
 
 
-def get_tracked_results(image_path, track_engine, force_refresh=False):
+def get_tracked_results(image_path, track_engine, force_retrack=False):
     if not is_image(image_path):
         print(f'Please input a image path, got {image_path}.')
         return None
@@ -92,7 +92,7 @@ def get_tracked_results(image_path, track_engine, force_refresh=False):
         torch.save({}, tracked_pt_path)
     tracked_data = torch.load(tracked_pt_path, weights_only=False)
     image_base = os.path.basename(image_path)
-    if image_base in tracked_data and not force_refresh:
+    if image_base in tracked_data and not force_retrack:
         print(f'Load tracking result from cache: {tracked_pt_path}.')
     else:
         print(f'Tracking {image_path}...')
@@ -133,6 +133,17 @@ def is_image(image_path):
     return extention_name in ['jpg', 'png', 'jpeg']
 
 
+### ------- multi-view camera helper -------- ###
+def build_camera(ori_transforms, angle):
+    from pytorch3d.renderer.cameras import look_at_view_transform
+    # distance = ori_transforms[..., 3].square().sum(dim=-1).sqrt()[0].item() * 1.0
+    # print(distance)
+    distance = 8.1
+    R, T = look_at_view_transform(distance, 5, angle, device=ori_transforms.device) # D, E, A
+    rotate_trans = torch.cat([R, T[:, :, None]], dim=-1)
+    return rotate_trans
+
+
 ### ------------ run speed test ------------- ###
 def speed_test():
     driver_path = './demos/vfhq_driver'
@@ -170,8 +181,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image_path', '-i', default=None, type=str)
     parser.add_argument('--driver_path', '-d', required=True, type=str)
+    parser.add_argument('--force_retrack', '-f', action='store_true')
     parser.add_argument('--resume_path', '-r', default='./assets/GAGAvatar.pt', type=str)
     args = parser.parse_args()
     # launch
     torch.set_float32_matmul_precision('high')
-    inference(args.image_path, args.driver_path, args.resume_path)
+    inference(args.image_path, args.driver_path, args.resume_path, args.force_retrack)
