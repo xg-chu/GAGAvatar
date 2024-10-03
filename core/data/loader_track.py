@@ -89,26 +89,46 @@ class TrackedData(torch.utils.data.Dataset):
 
 
 class DriverData(torch.utils.data.Dataset):
-    def __init__(self, driver_path, feature_data, point_plane_size=296):
+    def __init__(self, driver_path, feature_data=None, point_plane_size=296):
         super().__init__()
+        if type(driver_path) == str:
+            self.driver_path = driver_path
+            # build records
+            self._is_video = True
+            _records_path = os.path.join(self.driver_path, 'smoothed.pkl')
+            if not os.path.exists(_records_path):
+                self._is_video = False
+                _records_path = os.path.join(self.driver_path, 'optim.pkl')
+            with open(_records_path, 'rb') as f:
+                self._data = pickle.load(f)
+                self._frames = sorted(list(self._data.keys()), key=lambda x:int(x.split('_')[-1]))
+            if not self._is_video:
+                self.shuffle_slice(60)
+        else:
+            self._is_video = False
+            self._data = driver_path
+            self._frames = list(self._data.keys())
+            self._lmdb_engine = {key: self._data[key]['image']*255.0 for key in self._data.keys()}
         # meta data
-        self.driver_path = driver_path
         self.feature_data = feature_data
         self.point_plane_size = point_plane_size
-        # build records
-        _records_path = os.path.join(self.driver_path, 'smoothed.pkl')
-        if not os.path.exists(_records_path):
-            _records_path = os.path.join(self.driver_path, 'optim.pkl')
-        with open(_records_path, 'rb') as f:
-            self._data = pickle.load(f)
-            self._frames = sorted(list(self._data.keys()), key=lambda x:int(x.split('_')[-1]))
         # build model
         self.flame_model = FLAMEModel(n_shape=300, n_exp=100, scale=5.0, no_lmks=True)
         # build feature data
-        self.f_image = torchvision.transforms.functional.resize(self.feature_data['image'].cpu(), (518, 518), antialias=True)
-        f_transform = self.feature_data['transform_matrix'].float().cpu()
-        self.f_planes = build_points_planes(self.point_plane_size, f_transform)
-        self.f_shape = self.feature_data['shapecode'].float().cpu()
+        if feature_data is None:
+            _lmdb_engine = LMDBEngine(os.path.join(self.driver_path, 'img_lmdb'), write=False)
+            frame_key = random.choice(self._frames)
+            _f_image = _lmdb_engine[frame_key].float() / 255.0
+            self.f_image = torchvision.transforms.functional.resize(_f_image, (518, 518), antialias=True)
+            f_transform = torch.tensor(self._data[frame_key]['transform_matrix']).float().cpu()
+            self.f_planes = build_points_planes(self.point_plane_size, f_transform)
+            self.f_shape = torch.tensor(self._data[frame_key]['shapecode']).float().cpu()
+            _lmdb_engine.close()
+        else:
+            self.f_image = torchvision.transforms.functional.resize(self.feature_data['image'].cpu(), (518, 518), antialias=True)
+            f_transform = self.feature_data['transform_matrix'].float().cpu()
+            self.f_planes = build_points_planes(self.point_plane_size, f_transform)
+            self.f_shape = self.feature_data['shapecode'].float().cpu()
 
     def slice(self, slice):
         self._frames = self._frames[:slice]

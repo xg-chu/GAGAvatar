@@ -58,15 +58,23 @@ rm -rf ./diff-gaussian-rasterization
 ### Prepare resources
 Prepare resources with ```bash ./build_resources.sh```.
 
-<!-- ## Quick Start
-Driven by images:
+## Quick Start Guide
+Driven by another **image**:
 ```
-python inference.py --driver ./demos/drivers/pdriver --input ./demos/examples/real1
+python inference.py --driver_path ./demos/examples/2.jpg --image_path ./demos/examples/1.jpg
 ```
-or driven by video:
+Driven by a tracked **video**:
 ```
-python inference.py --driver ./demos/drivers/vdriver1 --input ./demos/examples/art1 -v
-```  -->
+python inference.py --driver_path ./demos/drivers/obama --image_path ./demos/examples/1.jpg
+``` 
+Driven by a tracked **image_lmdb**:
+```
+python inference.py --driver_path ./demos/drivers/vfhq_driver --image_path ./demos/examples/1.jpg
+```
+
+To test the inference speed, refer to the ```speed_test()``` function in ```inference.py```.
+
+To test your own images online, refer to ```lines 52-55``` in ```inference.py```.
 
 ## Citation
 If you find our work useful in your research, please consider citing:
@@ -84,7 +92,7 @@ If you find our work useful in your research, please consider citing:
 ## Acknowledgements
 Some part of our work is built based on FLAME, StyleMatte, EMICA and VGGHead. 
 The GAGAvatar Logo is designed by Caihong Ning.
-We thank you for sharing their wonderful code and their wonderful work.
+We also thank the following projects for sharing their great work.
 - **FLAME**: https://flame.is.tue.mpg.de
 - **StyleMatte**: https://github.com/chroneus/stylematte
 - **EMICA**: https://github.com/radekd91/inferno
