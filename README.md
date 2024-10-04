@@ -1,9 +1,9 @@
 <h1 align="center"><b><img src="./demos/gagavatar_logo.png" width="520"/></b></h1>
-<!-- <h3 align="center">
-    <a href='https://arxiv.org/abs/2401.10215'><img src='https://img.shields.io/badge/ArXiv-PDF-red'></a> &nbsp; 
+<h3 align="center">
+    <!-- <a href='https://arxiv.org/abs/2401.10215'><img src='https://img.shields.io/badge/ArXiv-PDF-red'></a> &nbsp;  -->
     <a href='https://xg-chu.site/project_gagavatar/'><img src='https://img.shields.io/badge/Project-Page-blue'></a> &nbsp; 
-    <a href='https://www.youtube.com/watch?v=7A3DMaB6Zk0'><img src='https://img.shields.io/badge/Youtube-Video-red'></a> &nbsp; 
-</h3> -->
+    <!-- <a href='https://www.youtube.com/watch?v=7A3DMaB6Zk0'><img src='https://img.shields.io/badge/Youtube-Video-red'></a> &nbsp;  -->
+</h3>
 
 <h5 align="center">
     <a href="https://xg-chu.site">Xuangeng Chu</a><sup>1</sup>&emsp;
