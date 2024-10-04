@@ -61,15 +61,15 @@ Prepare resources with ```bash ./build_resources.sh```.
 ## Quick Start Guide
 Driven by another **image**:
 ```
-python inference.py --driver_path ./demos/examples/2.jpg --image_path ./demos/examples/1.jpg
+python inference.py -d ./demos/examples/2.jpg -i ./demos/examples/1.jpg
 ```
 Driven by a tracked **video**:
 ```
-python inference.py --driver_path ./demos/drivers/obama --image_path ./demos/examples/1.jpg
+python inference.py -d ./demos/drivers/obama -i ./demos/examples/1.jpg
 ``` 
 Driven by a tracked **image_lmdb**:
 ```
-python inference.py --driver_path ./demos/drivers/vfhq_demo --image_path ./demos/examples/1.jpg
+python inference.py -d ./demos/drivers/vfhq_demo -i ./demos/examples/1.jpg
 ```
 
 To test the inference speed, refer to the ```speed_test()``` function in ```inference.py```.

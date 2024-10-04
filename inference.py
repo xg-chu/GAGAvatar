@@ -56,12 +56,16 @@ def inference(image_path, driver_path, resume_path, force_retrack=False, device=
 
     driver_dataloader = lightning_fabric.setup_dataloaders(driver_dataloader)
     # run inference process
+    _water_mark_size = (82, 256)
+    _water_mark = torchvision.io.read_image('demos/gagavatar_logo.png', mode=torchvision.io.ImageReadMode.RGB_ALPHA).float()/255.0
+    _water_mark = torchvision.transforms.functional.resize(_water_mark, _water_mark_size, antialias=True).to(device)
     images = []
     for idx, batch in enumerate(tqdm(driver_dataloader)):
         render_results = model.forward_expression(batch)
         gt_rgb = render_results['t_image'].clamp(0, 1)
         # pred_rgb = render_results['gen_image'].clamp(0, 1)
         pred_sr_rgb = render_results['sr_gen_image'].clamp(0, 1)
+        pred_sr_rgb = add_water_mark(pred_sr_rgb, _water_mark)
         visulize_rgbs = torchvision.utils.make_grid([gt_rgb[0], pred_sr_rgb[0]], nrow=4, padding=0)
         images.append(visulize_rgbs.cpu())
     dump_dir = os.path.join('render_results', meta_cfg.MODEL.NAME.split('_')[0])
@@ -131,6 +135,15 @@ def get_tracked_results(image_path, track_engine, force_retrack=False):
 def is_image(image_path):
     extention_name = image_path.split('.')[-1].lower()
     return extention_name in ['jpg', 'png', 'jpeg']
+
+
+def add_water_mark(image, water_mark):
+    _water_mark_rgb = water_mark[None, :3]
+    _water_mark_alpha = water_mark[None, 3:4].expand(-1, 3, -1, -1) * 0.8
+    _mark_patch = image[..., -water_mark.shape[-2]:, -water_mark.shape[-1]:]
+    _mark_patch = _mark_patch * (1-_water_mark_alpha) + _water_mark_rgb * _water_mark_alpha
+    image[..., -water_mark.shape[-2]:, -water_mark.shape[-1]:] = _mark_patch
+    return image
 
 
 ### ------- multi-view camera helper -------- ###
