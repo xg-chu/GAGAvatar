@@ -60,6 +60,11 @@ def inference(image_path, driver_path, resume_path, force_retrack=False, device=
     _water_mark = torchvision.io.read_image('demos/gagavatar_logo.png', mode=torchvision.io.ImageReadMode.RGB_ALPHA).float()/255.0
     _water_mark = torchvision.transforms.functional.resize(_water_mark, _water_mark_size, antialias=True).to(device)
     images = []
+
+    ### ----------- if you need to run multiview results ------------ ###
+    # view_angles = np.linspace(angle, -angle, frame_num)
+    # batch['t_transform'] = build_camera(view_angles[idx])
+
     for idx, batch in enumerate(tqdm(driver_dataloader)):
         render_results = model.forward_expression(batch)
         gt_rgb = render_results['t_image'].clamp(0, 1)
@@ -147,12 +152,15 @@ def add_water_mark(image, water_mark):
 
 
 ### ------- multi-view camera helper -------- ###
-def build_camera(ori_transforms, angle):
+def build_camera(angle, ori_transforms=None, device='cuda'):
     from pytorch3d.renderer.cameras import look_at_view_transform
-    # distance = ori_transforms[..., 3].square().sum(dim=-1).sqrt()[0].item() * 1.0
-    # print(distance)
-    distance = 8.1
-    R, T = look_at_view_transform(distance, 5, angle, device=ori_transforms.device) # D, E, A
+    if ori_transforms is None:
+        distance = 9.3
+    else:
+        distance = ori_transforms[..., 3].square().sum(dim=-1).sqrt()[0].item() * 1.0
+        device = ori_transforms.device
+    print(f'Camera distance: {distance}, angle: {angle}.')
+    R, T = look_at_view_transform(distance, 5, angle, device=device) # D, E, A
     rotate_trans = torch.cat([R, T[:, :, None]], dim=-1)
     return rotate_trans
 
@@ -192,7 +200,7 @@ if __name__ == '__main__':
     warnings.simplefilter("ignore", category=TqdmExperimentalWarning, lineno=0, append=False)
     # build args
     parser = argparse.ArgumentParser()
-    parser.add_argument('--image_path', '-i', default=None, type=str)
+    parser.add_argument('--image_path', '-i', required=True, type=str)
     parser.add_argument('--driver_path', '-d', required=True, type=str)
     parser.add_argument('--force_retrack', '-f', action='store_true')
     parser.add_argument('--resume_path', '-r', default='./assets/GAGAvatar.pt', type=str)
