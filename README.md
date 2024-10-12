@@ -1,8 +1,9 @@
 <h1 align="center"><b><img src="./demos/gagavatar_logo.png" width="520"/></b></h1>
 <h3 align="center">
-    <!-- <a href='https://arxiv.org/abs/2401.10215'><img src='https://img.shields.io/badge/ArXiv-PDF-red'></a> &nbsp;  -->
+    <a href='https://arxiv.org/abs/2410.07971'><img src='https://img.shields.io/badge/ArXiv-PDF-red'></a> &nbsp; 
     <a href='https://xg-chu.site/project_gagavatar/'><img src='https://img.shields.io/badge/Project-Page-blue'></a> &nbsp; 
     <!-- <a href='https://www.youtube.com/watch?v=7A3DMaB6Zk0'><img src='https://img.shields.io/badge/Youtube-Video-red'></a> &nbsp;  -->
+    <a href='https://github.com/xg-chu/GAGAvatar_track/'><img src='https://img.shields.io/badge/Data-Tracker-red'></a> &nbsp; 
 </h3>
 
 <h5 align="center">
@@ -58,11 +59,19 @@ rm -rf ./diff-gaussian-rasterization
 ### Prepare resources
 Prepare resources with ```bash ./build_resources.sh```.
 
+Also prepare resources for GAGAvatar_track using: 
+```
+cd core/libs/GAGAvatar_track
+bash ./build_resources.sh
+```
+
 ## Quick Start Guide
 Driven by another **image**:
 ```
+# This will track the images online, which is slow.
 python inference.py -d ./demos/examples/2.jpg -i ./demos/examples/1.jpg
 ```
+
 Driven by a tracked **video**:
 ```
 python inference.py -d ./demos/drivers/obama -i ./demos/examples/1.jpg
@@ -75,6 +84,8 @@ python inference.py -d ./demos/drivers/vfhq_demo -i ./demos/examples/1.jpg
 To test the inference speed, refer to the ```speed_test()``` function in ```inference.py```.
 
 To test your own images online, refer to ```lines 52-55``` in ```inference.py```.
+
+To test your own driving sequences (videos/images), refer to [GAGAvatar_track](https://github.com/xg-chu/GAGAvatar_track/) and demo sequences to build your own tracking sequence.
 
 ## Citation
 If you find our work useful in your research, please consider citing:
