@@ -40,21 +40,6 @@ We are now preparing the <b>pre-trained model and quick start materials</b> and 
 conda env create -f environment.yml
 conda activate GAGAvatar
 ```
-### Install the 3DGS renderer
-
-<details>
-<summary><span>What’s the difference between this version and the original 3DGS?</span></summary>
-
-- We changed the number of channels so that 3D Gaussians carry 32-dim features.
-- We changed the package name to avoid conflict with the original Gaussian splash.
-
-</details>
-
-```
-git clone --recurse-submodules git@github.com:xg-chu/diff-gaussian-rasterization.git
-pip install ./diff-gaussian-rasterization
-rm -rf ./diff-gaussian-rasterization
-```
 
 ### Prepare resources
 Prepare resources with ```bash ./build_resources.sh```.

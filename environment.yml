@@ -142,6 +142,7 @@ dependencies:
       - frozenlist==1.4.1
       - fsspec==2024.9.0
       - fvcore==0.1.5.post20221221
+      - git+https://github.com/xg-chu/diff-gaussian-rasterization.git
       - gpustat==1.1.1
       - huggingface-hub==0.25.1
       - imageio==2.35.1
