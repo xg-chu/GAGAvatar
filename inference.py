@@ -138,8 +138,8 @@ def get_tracked_results(image_path, track_engine, force_retrack=False):
 
 
 def is_image(image_path):
-    extention_name = image_path.split('.')[-1].lower()
-    return extention_name in ['jpg', 'png', 'jpeg']
+    extension_name = image_path.split('.')[-1].lower()
+    return extension_name in ['jpg', 'png', 'jpeg']
 
 
 def add_water_mark(image, water_mark):
