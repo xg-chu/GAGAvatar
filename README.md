@@ -93,6 +93,50 @@ To test your own images online, refer to ```lines 52-55``` in ```inference.py```
 
 To test your own driving sequences (videos/images), refer to [GAGAvatar_track](https://github.com/xg-chu/GAGAvatar_track/) and demo sequences to build your own driving sequence.
 
+## Training Guide
+<details>
+<summary><span>You can use the pre-trained model directly, but if you need to retrain on your data:</span></summary>
+
+<!-- Building the dataset used for training requires img_lmdb, optim.pkl and dataset.json. -->
+### Step 1: Building the image LMDB
+Build ```img_lmdb``` yourself.
+
+
+All the images should be cropped as inference. (Refer to line 218 in ```core/libs/GAGAvatar_track/engines/engine_core.py```) 
+
+Dump images using ```core/libs/utils_lmdb.py```, there is also an API for building lmdb: ```dump(key_name, payload)```, payload should be tensor with (3, 512, 512), in [0, 255]. 
+
+015252 is video id (used when sampling), 99 is frame id (0 is the first frame, other frames id can be discontinuous).
+```
+img_lmdb:
+    '015252_99' : image payload
+```
+
+### Step 2: Track the image LMDB
+Using ```track_lmdb.py``` in ```GAGAvatar_track```, you should get a ```optim.pkl```.
+```
+optim.pkl:
+- dict_keys(['000000_0', …])
+    - "000000_0": dict_keys(['bbox', 'shapecode', 'expcode', 'posecode', 'eyecode', 'transform_matrix'])
+```
+
+### Step 3: Split the dataset
+Build ```dataset.json``` yourself, it should contain the keys in ```img_lmdb``` and ```optim.pkl```.
+```
+dataset.json: {
+    "train": ["000000_0", "000000_5", ..., '001384_654'],
+    "val":   ["015209_0", ..., "015218_7"], 
+    "test":  ["015203_0", ..., "015252_139"]
+}
+```
+
+### Step 4: Modify the config and train
+```
+python train.py --config gaga --dataset vfhq
+```
+
+</details>
+
 ## Citation
 If you find our work useful in your research, please consider citing:
 ```bibtex
