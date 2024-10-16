@@ -35,6 +35,12 @@
 We are now preparing the <b>pre-trained model and quick start materials</b> and will release it within a week. -->
 
 ## Installation
+### Clone the project
+```
+git clone --recurse-submodules git@github.com:xg-chu/GAGAvatar.git
+cd GAGAvatar
+```
+
 ### Build environment
 ```
 conda env create -f environment.yml
