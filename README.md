@@ -46,7 +46,7 @@ conda activate GAGAvatar
 <summary><span>What’s the difference between this version and the original 3DGS?</span></summary>
 
 - We changed the number of channels so that 3D Gaussians carry 32-dim features.
-- We changed the package name to avoid conflict with the original Gaussian splash.
+- We changed the package name to avoid conflict with the original Gaussian splatting.
 
 </details>
 

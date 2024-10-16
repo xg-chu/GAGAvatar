@@ -122,12 +122,15 @@ def get_tracked_results(image_path, track_engine, force_retrack=False):
         if len(other_paths) <= 35:
             print('Track on all images in this folder to save time.')
             other_images = [torchvision.io.read_image(imp, mode=torchvision.io.ImageReadMode.RGB).float() for imp in other_paths]
-            other_feature_data = track_engine.track_image(other_images, other_names)
-            for key in other_feature_data:
-                torchvision.utils.save_image(
-                    torch.tensor(other_feature_data[key]['vis_image']), 'render_results/tracked/{}.jpg'.format(key.split('.')[0])
-                )
-            tracked_data.update(other_feature_data)
+            try:
+                other_feature_data = track_engine.track_image(other_images, other_names)
+                for key in other_feature_data:
+                    torchvision.utils.save_image(
+                        torch.tensor(other_feature_data[key]['vis_image']), 'render_results/tracked/{}.jpg'.format(key.split('.')[0])
+                    )
+                tracked_data.update(other_feature_data)
+            except Exception as e:
+                print(f'Error: {e}.')
         # save tracking result
         torch.save(tracked_data, tracked_pt_path)
     feature_data = tracked_data[image_base]
