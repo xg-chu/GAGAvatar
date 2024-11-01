@@ -154,6 +154,7 @@ If you find our work useful in your research, please consider citing:
 Some part of our work is built based on FLAME, StyleMatte, EMICA and VGGHead. 
 The GAGAvatar Logo is designed by Caihong Ning.
 We also thank the following projects for sharing their great work.
+- **GPAvatar**: https://github.com/xg-chu/GPAvatar
 - **FLAME**: https://flame.is.tue.mpg.de
 - **StyleMatte**: https://github.com/chroneus/stylematte
 - **EMICA**: https://github.com/radekd91/inferno

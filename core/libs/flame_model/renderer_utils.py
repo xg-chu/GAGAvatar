@@ -28,7 +28,10 @@ class RenderMesh(nn.Module):
             self.faces = faces.verts_idx
         elif faces is not None:
             import numpy as np
-            self.faces = torch.tensor(faces.astype(np.int32))
+            if isinstance(faces, torch.Tensor):
+                self.faces = faces
+            else:
+                self.faces = torch.tensor(faces.astype(np.int32))
         else:
             raise NotImplementedError('Must have faces.')
         self.raster_settings = RasterizationSettings(image_size=image_size, blur_radius=0.0, faces_per_pixel=1)
