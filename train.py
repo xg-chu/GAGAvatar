@@ -123,6 +123,7 @@ class Trainer:
     def run_val(self, iter_idx, save_ckpt=True):
         val_iter = iter(self.val_dataloader)
         _validation_outputs = []
+        self.model.eval()
         for idx, batch_data in enumerate(val_iter):
             render_results = self.model(batch_data, rand=False)
             gt_rgb = render_results['t_image'].clamp(0, 1).cpu()

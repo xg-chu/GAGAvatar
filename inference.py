@@ -27,6 +27,7 @@ def inference(image_path, driver_path, resume_path, force_retrack=False, device=
     model = build_model(model_cfg=meta_cfg.MODEL)
     model.load_state_dict(full_checkpoint['model'])
     model = lightning_fabric.setup(model)
+    model.eval()
     print(str(meta_cfg))
     track_engine = TrackEngine(focal_length=12.0, device=device)
     # build input data
