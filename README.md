@@ -63,7 +63,10 @@ rm -rf ./diff-gaussian-rasterization
 ```
 
 ### Prepare resources
-Prepare resources with ```bash ./build_resources.sh```.
+Prepare resources with:
+```
+bash ./build_resources.sh
+```
 
 Also prepare resources for GAGAvatar_track using: 
 ```
