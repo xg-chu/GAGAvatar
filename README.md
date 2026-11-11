@@ -81,7 +81,7 @@ or license requirements.
 
 Also prepare resources for GAGAvatar_track using: 
 ```
-cd core/libs/GAGAvatar_track
+cd gagavatar/libs/GAGAvatar_track
 bash ./build_resources.sh
 ```
 
